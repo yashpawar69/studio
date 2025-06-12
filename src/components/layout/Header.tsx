@@ -1,7 +1,8 @@
+
 "use client";
 
 import Link from 'next/link';
-import { ShoppingBag, Heart, Menu, X } from 'lucide-react';
+import { ShoppingBag, Heart, Menu, X, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useState, useEffect } from 'react';
@@ -9,11 +10,12 @@ import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/s
 import { usePathname } from 'next/navigation';
 
 
-const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
+const NavLink = ({ href, children, icon }: { href: string; children: React.ReactNode, icon?: React.ReactNode }) => {
   const pathname = usePathname();
-  const isActive = pathname === href;
+  const isActive = pathname === href || (href === "/admin" && pathname.startsWith("/admin"));
   return (
-    <Link href={href} className={`text-sm font-medium transition-colors hover:text-primary ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
+    <Link href={href} className={`flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
+      {icon}
       {children}
     </Link>
   );
@@ -32,7 +34,7 @@ export default function Header() {
   const navItems = [
     { href: "/", label: "Home" },
     { href: "/wishlist", label: "Wishlist" },
-    // Add more nav items here if needed: { href: "/shop", label: "Shop" },
+    { href: "/admin", label: "Admin", icon: <ShieldCheck className="h-4 w-4" /> },
   ];
 
 
@@ -47,12 +49,12 @@ export default function Header() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
           {navItems.map((item) => (
-            <NavLink key={item.href} href={item.href}>
+            <NavLink key={item.href} href={item.href} icon={item.icon}>
               {item.label}
             </NavLink>
           ))}
           <Link href="/wishlist" passHref>
-            <Button variant="ghost" size="icon" aria-label="Wishlist">
+            <Button variant="ghost" size="icon" aria-label="Wishlist" className="relative">
               <Heart className="h-5 w-5" />
               {wishlistCount > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-xs text-accent-foreground">
@@ -72,7 +74,7 @@ export default function Header() {
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[280px] p-0">
+            <SheetContent side="right" className="w-[280px] p-0 bg-background">
               <div className="flex flex-col h-full">
                 <div className="flex items-center justify-between p-4 border-b">
                    <Link href="/" className="flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
@@ -86,16 +88,25 @@ export default function Header() {
                       </Button>
                   </SheetClose>
                 </div>
-                <nav className="flex flex-col gap-4 p-4">
+                <nav className="flex flex-col gap-1 p-4">
                   {navItems.map((item) => (
                      <SheetClose key={item.href} asChild>
-                        <Link href={item.href} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
-                          {item.label}
+                        <Link 
+                          href={item.href} 
+                          className="flex items-center gap-3 px-3 py-2.5 text-lg font-medium text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {item.icon && React.cloneElement(item.icon as React.ReactElement, { className: "h-5 w-5" })}
+                          <span>{item.label}</span>
                         </Link>
                      </SheetClose>
                   ))}
                    <SheetClose asChild>
-                    <Link href="/wishlist" className="flex items-center gap-2 text-lg font-medium text-foreground hover:text-primary transition-colors">
+                    <Link 
+                      href="/wishlist" 
+                      className="flex items-center gap-3 px-3 py-2.5 text-lg font-medium text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
                       <Heart className="h-5 w-5" />
                       <span>Wishlist ({wishlistCount})</span>
                     </Link>
@@ -109,3 +120,4 @@ export default function Header() {
     </header>
   );
 }
+
