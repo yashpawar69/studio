@@ -10,6 +10,7 @@ import FilterSortBar from '@/components/product/FilterSortBar';
 import AiStylistSection from '@/components/AiStylistSection';
 import TrendingProducts from '@/components/product/TrendingProducts';
 import TestimonialSection from '@/components/TestimonialSection';
+import OutfitBanner from '@/components/layout/OutfitBanner'; // Added import
 
 export default function HomePage() {
   const [allProducts] = useState<Product[]>(mockProducts);
@@ -93,8 +94,10 @@ export default function HomePage() {
   }, [aiBrowsingHistory]);
 
   return (
-    <div className="space-y-8">
-      <section>
+    <div className="space-y-12"> {/* Increased base spacing */}
+      <OutfitBanner /> {/* Added banner component */}
+      
+      <section id="products"> {/* Added id for banner link */}
         <h1 className="font-headline text-3xl md:text-4xl font-bold mb-2 text-center">
           Discover Your Next Favorite Look
         </h1>
