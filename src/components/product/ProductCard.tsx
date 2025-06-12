@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -9,6 +10,7 @@ import { Heart, Eye, ExternalLink } from 'lucide-react';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import StarRating from '@/components/ui/StarRating'; // New import
 
 interface ProductCardProps {
   product: Product;
@@ -20,11 +22,10 @@ export default function ProductCard({ product, onQuickView, className }: Product
   const { wishlistItems, addToWishlist, removeFromWishlist, isItemInWishlist } = useWishlist();
   const { toast } = useToast();
   
-  // Safely check isItemInWishlist only after context is initialized
   const isInWishlist = isItemInWishlist(product.id);
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click or link navigation
+    e.stopPropagation(); 
     if (isInWishlist) {
       removeFromWishlist(product.id);
       toast({ title: `${product.name} removed from wishlist.` });
@@ -33,6 +34,12 @@ export default function ProductCard({ product, onQuickView, className }: Product
       toast({ title: `${product.name} added to wishlist!` });
     }
   };
+
+  const averageRating = product.reviews && product.reviews.length > 0
+    ? product.reviews.reduce((acc, review) => acc + review.rating, 0) / product.reviews.length
+    : 0;
+  
+  const reviewCount = product.reviews ? product.reviews.length : 0;
 
   return (
     <Card className={cn("flex flex-col overflow-hidden rounded-lg shadow-lg transition-all hover:shadow-xl animation-soft-fade-in", className)}>
@@ -60,6 +67,16 @@ export default function ProductCard({ product, onQuickView, className }: Product
         <CardDescription className="text-sm text-muted-foreground mb-2 h-10 overflow-hidden">
           {product.description.substring(0, 60)}...
         </CardDescription>
+        <div className="flex items-center mb-2">
+          {reviewCount > 0 ? (
+            <>
+              <StarRating rating={averageRating} size={16} />
+              <span className="ml-2 text-xs text-muted-foreground">({reviewCount} review{reviewCount !== 1 ? 's' : ''})</span>
+            </>
+          ) : (
+            <span className="text-xs text-muted-foreground italic">No reviews yet</span>
+          )}
+        </div>
         <p className="text-lg font-semibold text-primary">${product.price.toFixed(2)}</p>
       </CardContent>
       <CardFooter className="p-4 grid grid-cols-2 gap-2">
