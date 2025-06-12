@@ -1,6 +1,7 @@
 
 "use client";
 
+import * as React from 'react'; // Added this line
 import Link from 'next/link';
 import { ShoppingBag, Heart, Menu, X, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -91,8 +92,8 @@ export default function Header() {
                 <nav className="flex flex-col gap-1 p-4">
                   {navItems.map((item) => (
                      <SheetClose key={item.href} asChild>
-                        <Link 
-                          href={item.href} 
+                        <Link
+                          href={item.href}
                           className="flex items-center gap-3 px-3 py-2.5 text-lg font-medium text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
@@ -102,8 +103,8 @@ export default function Header() {
                      </SheetClose>
                   ))}
                    <SheetClose asChild>
-                    <Link 
-                      href="/wishlist" 
+                    <Link
+                      href="/wishlist"
                       className="flex items-center gap-3 px-3 py-2.5 text-lg font-medium text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
@@ -120,4 +121,3 @@ export default function Header() {
     </header>
   );
 }
-
