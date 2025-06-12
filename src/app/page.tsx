@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -7,6 +8,7 @@ import ProductGrid from '@/components/product/ProductGrid';
 import QuickViewDialog from '@/components/product/QuickViewDialog';
 import FilterSortBar from '@/components/product/FilterSortBar';
 import AiStylistSection from '@/components/AiStylistSection';
+import TrendingProducts from '@/components/product/TrendingProducts';
 
 export default function HomePage() {
   const [allProducts] = useState<Product[]>(mockProducts);
@@ -48,13 +50,19 @@ export default function HomePage() {
         filtered.sort((a, b) => b.price - a.price);
         break;
       case 'popularity':
-        filtered.sort((a, b) => b.popularity - a.popularity);
+        // Primary sort by popularity, secondary by name for stable sort if popularities are equal
+        filtered.sort((a, b) => {
+          if (b.popularity === a.popularity) {
+            return a.name.localeCompare(b.name);
+          }
+          return b.popularity - a.popularity;
+        });
         break;
       case 'name-asc':
         filtered.sort((a, b) => a.name.localeCompare(b.name));
         break;
       case 'name-desc':
-        filtered.sort((a, b) => b.name.localeCompare(a.name));
+        filtered.sort((a, b) => b.name.localeCompare(a.name)); // Corrected: b.name.localeCompare(a.name) for Z-A
         break;
     }
     
@@ -96,6 +104,8 @@ export default function HomePage() {
         <ProductGrid products={displayedProducts} onQuickView={handleQuickView} />
       </section>
       
+      <TrendingProducts products={allProducts} onQuickView={handleQuickView} count={4} />
+
       <AiStylistSection initialBrowsingHistory={currentAiHistoryText} />
 
       {quickViewProduct && (
