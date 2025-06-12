@@ -10,6 +10,7 @@ import FilterSortBar from '@/components/product/FilterSortBar';
 import AiStylistSection from '@/components/AiStylistSection';
 import TrendingProducts from '@/components/product/TrendingProducts';
 import TestimonialSection from '@/components/TestimonialSection';
+import CategoryHighlightSection from '@/components/product/CategoryHighlightSection'; // Added import
 
 export default function HomePage() {
   const [allProducts] = useState<Product[]>(mockProducts);
@@ -63,7 +64,7 @@ export default function HomePage() {
         filtered.sort((a, b) => a.name.localeCompare(b.name));
         break;
       case 'name-desc':
-        filtered.sort((a, b) => b.name.localeCompare(a.name)); // Corrected: b.name.localeCompare(a.name) for Z-A
+        filtered.sort((a, b) => b.name.localeCompare(a.name)); 
         break;
     }
     
@@ -84,6 +85,10 @@ export default function HomePage() {
   const handleFilterChange = (newFilterValues: Partial<Filters>) => {
     setFilters(prevFilters => ({ ...prevFilters, ...newFilterValues }));
   };
+  
+  const handleCategorySelectFromHighlight = (category: string) => {
+    handleFilterChange({ category }); // Re-use existing filter change logic
+  };
 
   const currentAiHistoryText = useMemo(() => {
     if (aiBrowsingHistory.length === 0) {
@@ -94,6 +99,10 @@ export default function HomePage() {
 
   return (
     <div className="space-y-8">
+      <CategoryHighlightSection 
+        currentCategory={filters.category} 
+        onCategorySelect={handleCategorySelectFromHighlight} 
+      />
       <section>
         <h1 className="font-headline text-3xl md:text-4xl font-bold mb-2 text-center">
           Discover Your Next Favorite Look
