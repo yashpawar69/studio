@@ -10,7 +10,6 @@ import FilterSortBar from '@/components/product/FilterSortBar';
 import AiStylistSection from '@/components/AiStylistSection';
 import TrendingProducts from '@/components/product/TrendingProducts';
 import TestimonialSection from '@/components/TestimonialSection';
-import CategoryHighlightSection from '@/components/product/CategoryHighlightSection'; // Added import
 
 export default function HomePage() {
   const [allProducts] = useState<Product[]>(mockProducts);
@@ -86,10 +85,6 @@ export default function HomePage() {
     setFilters(prevFilters => ({ ...prevFilters, ...newFilterValues }));
   };
   
-  const handleCategorySelectFromHighlight = (category: string) => {
-    handleFilterChange({ category }); // Re-use existing filter change logic
-  };
-
   const currentAiHistoryText = useMemo(() => {
     if (aiBrowsingHistory.length === 0) {
       return "I'm interested in stylish and modern clothing.";
@@ -99,10 +94,6 @@ export default function HomePage() {
 
   return (
     <div className="space-y-8">
-      <CategoryHighlightSection 
-        currentCategory={filters.category} 
-        onCategorySelect={handleCategorySelectFromHighlight} 
-      />
       <section>
         <h1 className="font-headline text-3xl md:text-4xl font-bold mb-2 text-center">
           Discover Your Next Favorite Look
