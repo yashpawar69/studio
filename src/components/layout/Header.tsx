@@ -1,9 +1,9 @@
 
 "use client";
 
-import * as React from 'react'; // Added this line
+import * as React from 'react'; 
 import Link from 'next/link';
-import { ShoppingBag, Heart, Menu, X, ShieldCheck } from 'lucide-react';
+import { ShoppingBag, Heart, Menu, X, ShieldCheck, CreditCard } from 'lucide-react'; // Added CreditCard
 import { Button } from '@/components/ui/button';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useState, useEffect } from 'react';
@@ -13,7 +13,9 @@ import { usePathname } from 'next/navigation';
 
 const NavLink = ({ href, children, icon }: { href: string; children: React.ReactNode, icon?: React.ReactNode }) => {
   const pathname = usePathname();
-  const isActive = pathname === href || (href === "/admin" && pathname.startsWith("/admin"));
+  const isActive = pathname === href || 
+                   (href === "/admin" && pathname.startsWith("/admin")) ||
+                   (href === "/checkout" && pathname.startsWith("/checkout"));
   return (
     <Link href={href} className={`flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
       {icon}
@@ -34,7 +36,8 @@ export default function Header() {
 
   const navItems = [
     { href: "/", label: "Home" },
-    { href: "/wishlist", label: "Wishlist" },
+    { href: "/wishlist", label: "Wishlist", icon: <Heart className="h-4 w-4" /> },
+    { href: "/checkout", label: "Checkout", icon: <CreditCard className="h-4 w-4" /> }, // Added Checkout Link
     { href: "/admin", label: "Admin", icon: <ShieldCheck className="h-4 w-4" /> },
   ];
 
@@ -49,7 +52,7 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
-          {navItems.map((item) => (
+          {navItems.filter(item => item.href !== "/wishlist").map((item) => ( // Exclude wishlist from main nav, keep icon
             <NavLink key={item.href} href={item.href} icon={item.icon}>
               {item.label}
             </NavLink>
@@ -99,19 +102,14 @@ export default function Header() {
                         >
                           {item.icon && React.cloneElement(item.icon as React.ReactElement, { className: "h-5 w-5" })}
                           <span>{item.label}</span>
+                           {item.href === "/wishlist" && wishlistCount > 0 && (
+                            <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs text-accent-foreground">
+                                {wishlistCount}
+                            </span>
+                          )}
                         </Link>
                      </SheetClose>
                   ))}
-                   <SheetClose asChild>
-                    <Link
-                      href="/wishlist"
-                      className="flex items-center gap-3 px-3 py-2.5 text-lg font-medium text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <Heart className="h-5 w-5" />
-                      <span>Wishlist ({wishlistCount})</span>
-                    </Link>
-                  </SheetClose>
                 </nav>
               </div>
             </SheetContent>
