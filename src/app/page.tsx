@@ -113,7 +113,7 @@ export default function HomePage() {
 
       {quickViewProduct && (
         <QuickViewDialog
-          product={productQuickView}
+          product={quickViewProduct}
           isOpen={isQuickViewOpen}
           onOpenChange={setIsQuickViewOpen}
         />
