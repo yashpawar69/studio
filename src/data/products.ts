@@ -1,3 +1,4 @@
+
 import type { Product } from '@/types';
 
 export const productCategories = ["All", "Dresses", "Tops", "Bottoms", "Outerwear", "Accessories"];
@@ -160,3 +161,8 @@ export const mockProducts: Product[] = [
     colors: ['Multicolor'],
   }
 ];
+declare module '@/types' {
+  interface Testimonial {
+    dataAiHint?: string;
+  }
+}

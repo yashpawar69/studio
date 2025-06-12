@@ -9,6 +9,7 @@ import QuickViewDialog from '@/components/product/QuickViewDialog';
 import FilterSortBar from '@/components/product/FilterSortBar';
 import AiStylistSection from '@/components/AiStylistSection';
 import TrendingProducts from '@/components/product/TrendingProducts';
+import TestimonialSection from '@/components/TestimonialSection';
 
 export default function HomePage() {
   const [allProducts] = useState<Product[]>(mockProducts);
@@ -106,11 +107,13 @@ export default function HomePage() {
       
       <TrendingProducts products={allProducts} onQuickView={handleQuickView} count={4} />
 
+      <TestimonialSection />
+
       <AiStylistSection initialBrowsingHistory={currentAiHistoryText} />
 
       {quickViewProduct && (
         <QuickViewDialog
-          product={quickViewProduct}
+          product={productQuickView}
           isOpen={isQuickViewOpen}
           onOpenChange={setIsQuickViewOpen}
         />
