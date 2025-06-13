@@ -8,6 +8,9 @@ import Footer from '@/components/layout/Footer';
 export const metadata: Metadata = {
   title: 'Shop Me – AI-Powered Fashion Discovery',
   description: 'Discover your next favorite outfit with AI-powered style recommendations.',
+  icons: {
+    icon: '/favicon.ico', // Next.js will automatically look for this in the /public directory
+  },
 };
 
 export default function RootLayout({
