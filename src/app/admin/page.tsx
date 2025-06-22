@@ -1,6 +1,104 @@
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShieldCheck } from "lucide-react";
+import { useState, useTransition } from 'react';
+import Image from 'next/image';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { ShieldCheck, Image as ImageIcon, Loader2, Wand2 } from "lucide-react";
+import { generateImageAction } from '@/app/actions';
+import { useToast } from '@/hooks/use-toast';
+
+function GenerateProductImage() {
+  const [prompt, setPrompt] = useState('');
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
+
+  const handleGenerate = () => {
+    if (!prompt.trim()) {
+      toast({
+        title: "Missing Description",
+        description: "Please enter a description for the image.",
+        variant: "destructive",
+      });
+      return;
+    }
+    startTransition(async () => {
+      const result = await generateImageAction(prompt);
+      if ('error' in result) {
+        toast({
+          title: "Image Generation Failed",
+          description: result.error,
+          variant: "destructive",
+        });
+        setGeneratedImage(null);
+      } else {
+        setGeneratedImage(result.imageUrl);
+        toast({
+          title: "Image Generated!",
+          description: "Your new product image is ready.",
+        });
+      }
+    });
+  };
+
+  return (
+    <Card className="mt-8 shadow-md hover:shadow-lg transition-shadow">
+      <CardHeader>
+        <CardTitle className="text-xl font-semibold flex items-center">
+          <Wand2 className="mr-2 h-5 w-5" />
+          AI Product Image Generator
+        </CardTitle>
+        <CardDescription>
+          Describe a clothing item to generate a unique, professional product image.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          <Input 
+            placeholder="e.g., A stylish red floral maxi dress"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            disabled={isPending}
+          />
+          <Button onClick={handleGenerate} disabled={isPending}>
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              'Generate Image'
+            )}
+          </Button>
+          
+          {isPending && (
+             <div className="flex items-center justify-center p-8 text-muted-foreground">
+                <p>Generating your image, this may take a moment...</p>
+             </div>
+          )}
+
+          {generatedImage && !isPending && (
+            <div className="mt-6">
+              <h4 className="font-semibold mb-2">Generated Image:</h4>
+              <div className="relative aspect-square w-full max-w-sm mx-auto border rounded-lg overflow-hidden shadow-sm">
+                <Image 
+                  src={generatedImage} 
+                  alt="AI generated product image" 
+                  layout="fill"
+                  objectFit="cover"
+                  className="bg-gray-100"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 
 export default function AdminPage() {
   return (
@@ -47,6 +145,9 @@ export default function AdminPage() {
           </div>
         </CardContent>
       </Card>
+
+      <GenerateProductImage />
+
     </div>
   );
 }
