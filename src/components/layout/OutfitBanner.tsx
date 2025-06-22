@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from 'next/image';
@@ -22,13 +21,13 @@ interface BannerItem {
 const bannerItems: BannerItem[] = [
   {
     id: '1',
-    imageUrl: 'https://placehold.co/1200x500.png',
+    imageUrl: '/clothes.jpg',
     altText: 'Stylish outfit collection',
     title: 'Find Your Perfect Outfit',
     description: 'Explore our latest collections and discover styles curated just for you.',
     buttonText: 'Shop Collection',
     buttonLink: '#products',
-    dataAiHint: 'fashion outfits',
+    dataAiHint: '',
   },
   {
     id: '2',
@@ -61,7 +60,7 @@ export default function OutfitBanner() {
 
   const nextSlideStable = useCallback(() => {
     setCurrentIndex(prevCurrentIndex => (prevCurrentIndex + 1) % bannerItems.length);
-  }, [bannerItems.length]);
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
